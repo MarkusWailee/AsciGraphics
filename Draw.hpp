@@ -8,16 +8,17 @@
 class Draw : Terminal3D //friend
 {
 private:
-	static float z_formula(float z) {return z / (z + 0.1);}
+	static float z_formula(float z) {return z / (z + 0.1);}//non linear curve for z_buffer
 
 public:
 	//2D functions
 	static void Triangle(vec3 p1, vec3 p2, vec3 p3, char c);
 	static void Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code);
-	static void Circle(vec2 position, float r, char character);
+	static void Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character);
+	static void Quad(vec3* p, char character);
 	static void Quad_uv(vec3* p, char tex_code);
 	static void Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code);
-	static void Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character);
+	static void Circle(vec2 position, float r, char character);
 };
 
 inline void Draw::Quad_uv(vec3* p, char tex_code) //use 4 points
@@ -40,13 +41,19 @@ inline void Draw::Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character)
 	Triangle(p1, p2, p3, character);
 	Triangle(p1, p3, p4, character);
 }
+inline void Draw::Quad(vec3* p, char character)
+{
+	Triangle(p[0], p[1], p[2], character);
+	Triangle(p[0], p[2], p[3], character);
+}
 
 inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code)
 {
-	//Normalizing coordinates from -1 to 1 in x and y axis
 	ASCI_Texture& tex = Get().textures[tex_code];
 	if (tex.data == NULL)return;
 
+
+	//Normalizing coordinates from -1 to 1 in x and y axis
 	static float normalized_screen_width = Get().screen_w / (2 * (Get().screen_w / Get().screen_h));
 	static float normalized_screen_height = Get().screen_h / 2;
 	static float half_screen_w = Get().screen_w / 2;
@@ -60,9 +67,6 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	float inv_z1 = 1 / p1.z;
 	float inv_z2 = 1 / p2.z;
 	float inv_z3 = 1 / p3.z;
-
-
-
 
 	int min_x = min(min(p1.x, p2.x), p3.x);
 	int min_y = min(min(p1.y, p2.y), p3.y);
@@ -85,7 +89,7 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 			w1 = 1 - w2 - w3;
 
 			float interpolated_z = (p1.z * w1 + p2.z * w2 + p3.z * w3);
-			vec3 pixel_position = vec3(posX, posY, z_formula(interpolated_z));//adds non linear z_buffer precision
+			vec3 pixel_position = vec3(posX, posY, z_formula(interpolated_z));//adds non linear z_buffer for precision
 
 			float inv_z = inv_z1 * w1 + inv_z2 * w2 + inv_z3 * w3;
 

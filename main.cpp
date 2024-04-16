@@ -9,7 +9,7 @@
 int main()
 {
 
-	Terminal3D::Init(100,100, '0');
+	Terminal3D::Init(300,180, '.');
 	Terminal3D::Render();
 
 	//DeltaTime::SetTargetFPS(60);
@@ -70,6 +70,20 @@ int main()
 		'o','.','.','.','o',
 		'o','o','o','o','o'
 	};
+
+	char Tex_uv[] =
+	{
+		'#',' ','#',' ', '#',' ','#',' ',
+		' ','#',' ','#',' ', '#',' ','#',
+		'#',' ','#',' ', '#',' ','#',' ',
+		' ','#',' ','#',' ', '#',' ','#',
+		'#',' ','#',' ', '#',' ','#',' ',
+		' ','#',' ','#',' ', '#',' ','#',
+		'#',' ','#',' ', '#',' ','#',' ',
+		' ','#',' ','#',' ', '#',' ','#'
+	};
+
+	Terminal3D::Add_Texture('X', Tex_uv, 8, 8);
 	Terminal3D::Add_Texture('o', Tex_o, 5, 9);
 	Terminal3D::Add_Texture('l', Tex_l, 5, 9);
 	Terminal3D::Add_Texture('e', Tex_e, 5, 9);
@@ -109,12 +123,6 @@ int main()
 			0,1,0,
 			-sinf(time), 0 ,cosf(time)
 		};
-		mat3 RotZ =
-		{
-			cos(time), -sin(time),0,
-			sin(time),cos(time),0,
-			0,0,1
-		};
 
 		vec3 H[] =
 		{
@@ -137,18 +145,17 @@ int main()
 		
 		for (int i = 0; i < 4; i++)
 		{
-			H[i] = RotZ * RotY * H[i] + vec3(0.001,0.01,0.11);
+			H[i] = RotY * H[i] + vec3(0.001,0.01,0.11);
 		}
 
 		//Draw::Circle(vec2(0, 0),10, 'g');
 		//Draw::Quad_uv(qua, 'h');
-		for(int i = 0; i< 100;i++)
-			Draw3D::Plain_uv(vec3(i%10 * 2, i/10 * 4,2),H, 'h', camera);
-		//Draw3D::Plain_uv(vec3(0,0,2),E, 'e', camera);
-		//Draw3D::Plain_uv(vec3(0,0,2),L, 'l', camera);
-		//Draw3D::Plain_uv(vec3(0,0,2),L2, 'l', camera);
-		//Draw3D::Plain_uv(vec3(0,0,2),O, 'o', camera);
+		std::string s = "hello";
 
+		for(int i = 0; i< s.length();i++)
+			Draw3D::Plain_uv(vec3(i%10 * 2, 0,2),H, s[i], camera);
+
+		Draw3D::Plain_uv(vec3(0, 0,5), H, 'X', camera);
 
 		Terminal3D::Render();
 		//std::cout << "\x1B[H";

@@ -14,14 +14,17 @@ inline void Draw3D::Plain_uv(vec3 position, vec3* vertices4, char tex_code, Came
 	vec3 quad_vertices[4];
 	for (int i = 0; i < 4; i++)
 	{
+		//converting 3D vertices to 2D vertices
 		vec3 vertice = vertices4[i] + position;
 		vertice -= camera.position;
 		vertice = camera.RotXAxis() * camera.RotYAxis() * vertice;
 		vertice = vec3(vertice.x / vertice.z, vertice.y / vertice.z, vertice.z);
 
+		//Temporary fix for rendering -z values
 		if (vertice.z < 0)return;
 		quad_vertices[i] = vertice;
 	}
+	//Render 2D vertices
 	Quad_uv(quad_vertices, tex_code);
 }
 
@@ -38,7 +41,7 @@ inline void Draw3D::Plain(vec3 position, vec3* vertices4, char character, Camera
 		if (vertice.z < 0)return;
 		quad_vertices[i] = vertice;
 	}
-	Quad(quad_vertices[0], quad_vertices[1], quad_vertices[2], quad_vertices[3], character);
+	Quad(quad_vertices, character);
 }
 
 
