@@ -17,6 +17,7 @@ public:
 	static void Circle(vec2 position, float r, char character);
 	static void Quad_uv(vec3* p, char tex_code);
 	static void Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code);
+	static void Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character);
 };
 
 inline void Draw::Quad_uv(vec3* p, char tex_code) //use 4 points
@@ -34,16 +35,21 @@ inline void Draw::Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code)
 	Triangle_uv(p1, p3, p4, uv2, tex_code);
 }
 
+inline void Draw::Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character)
+{
+	Triangle(p1, p2, p3, character);
+	Triangle(p1, p3, p4, character);
+}
+
 inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code)
 {
 	//Normalizing coordinates from -1 to 1 in x and y axis
-	static float normalized_screen_width = Get().screen_w / (2*(Get().screen_w/Get().screen_h));
-	static float normalized_screen_height = Get().screen_h / 2;
-	static float half_screen_w = Get().screen_w / 2;
 	ASCI_Texture& tex = Get().textures[tex_code];
 	if (tex.data == NULL)return;
 
-
+	static float normalized_screen_width = Get().screen_w / (2 * (Get().screen_w / Get().screen_h));
+	static float normalized_screen_height = Get().screen_h / 2;
+	static float half_screen_w = Get().screen_w / 2;
 	p1.x = p1.x * normalized_screen_width + half_screen_w;
 	p1.y = p1.y * normalized_screen_height + normalized_screen_height;
 	p2.x = p2.x * normalized_screen_width + half_screen_w;
@@ -125,7 +131,8 @@ inline void Draw::Triangle(vec3 p1, vec3 p2, vec3 p3, char c) //RASTERIZER using
 			w3 = ((posY - p2.y) * (p1.x - p2.x) - (posX - p2.x) * (p1.y - p2.y)) /
 				((p3.y - p2.y) * (p1.x - p2.x) - (p3.x - p2.x) * (p1.y - p2.y));
 			w1 = 1 - w2 - w3;
-			vec3 pixel_position = vec3(posX, posY, p1.z * w1 + p2.z * w2 + p3.z * w3);
+			float interpolated_z = (p1.z * w1 + p2.z * w2 + p3.z * w3);
+			vec3 pixel_position = vec3(posX, posY, z_formula(interpolated_z));
 			if (!(w1 >= -0 && w1 <= 1 && w2 >= 0 && w2 <= 1 && w3 >= 0 && w3 <= 1))continue;
 			Get().SetPixel(pixel_position, c);
 		}

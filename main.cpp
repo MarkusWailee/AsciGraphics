@@ -9,7 +9,7 @@
 int main()
 {
 
-	Terminal3D::Init(200,180, '0');
+	Terminal3D::Init(100,100, '0');
 	Terminal3D::Render();
 
 	//DeltaTime::SetTargetFPS(60);
@@ -103,11 +103,17 @@ int main()
 		DeltaTime::ShowFPS();
 
 
-		mat3 Rot =
+		mat3 RotY =
 		{
 			cosf(time), 0, sinf(time),
 			0,1,0,
 			-sinf(time), 0 ,cosf(time)
+		};
+		mat3 RotZ =
+		{
+			cos(time), -sin(time),0,
+			sin(time),cos(time),0,
+			0,0,1
 		};
 
 		vec3 H[] =
@@ -131,22 +137,17 @@ int main()
 		
 		for (int i = 0; i < 4; i++)
 		{
-			H[i] *= 2;
-			H[i] = Rot * H[i];
-			E[i] = H[i] + vec3(-2, 0, 1)* 2;
-			L[i] = H[i] + vec3(0, 0, 2)	* 2;
-			L2[i] = H[i] + vec3(2, 0, 1)* 2;
-			O[i] = H[i] + vec3(4, 0, 2)	* 2;
-			H[i] += vec3(-4, 1, 4)		* 2;
+			H[i] = RotZ * RotY * H[i] + vec3(0.001,0.01,0.11);
 		}
 
 		//Draw::Circle(vec2(0, 0),10, 'g');
 		//Draw::Quad_uv(qua, 'h');
-		Draw3D::Plain_uv(H, 'h', camera);
-		Draw3D::Plain_uv(E, 'e', camera);
-		Draw3D::Plain_uv(L, 'l', camera);
-		Draw3D::Plain_uv(L2, 'l', camera);
-		Draw3D::Plain_uv(O, 'o', camera);
+		for(int i = 0; i< 100;i++)
+			Draw3D::Plain_uv(vec3(i%10 * 2, i/10 * 4,2),H, 'h', camera);
+		//Draw3D::Plain_uv(vec3(0,0,2),E, 'e', camera);
+		//Draw3D::Plain_uv(vec3(0,0,2),L, 'l', camera);
+		//Draw3D::Plain_uv(vec3(0,0,2),L2, 'l', camera);
+		//Draw3D::Plain_uv(vec3(0,0,2),O, 'o', camera);
 
 
 		Terminal3D::Render();
