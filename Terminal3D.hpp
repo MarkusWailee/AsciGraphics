@@ -73,7 +73,7 @@ inline void Terminal3D::init_i(int ScreenWidth, int ScreenHeight)
 inline void Terminal3D::SetPixel(vec3 position, char character)
 {
 	int x = position.x;
-	int y = position.y;
+	int y = Get().screen_h - position.y;//invert the y value
 	if (x < 0 || x >= Get().screen_w || y < 0 || y >= Get().screen_h) return;
 	int z_buffer_offset = x + y * Get().screen_h;
 	if (position.z > Get().z_front_buffer[z_buffer_offset])return;

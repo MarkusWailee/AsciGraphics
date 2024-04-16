@@ -9,7 +9,7 @@
 int main()
 {
 
-	Terminal3D::Init(300,200);
+	Terminal3D::Init(100,80);
 	Terminal3D::Render();
 
 	//DeltaTime::SetTargetFPS(60);
@@ -31,6 +31,11 @@ int main()
 		'o','.','o','o','o','o','.','o',
 		'o','o','o','o','o','o','o','o',
 	};
+	Terminal3D::Add_Texture('h', texture1, 8, 9);
+
+	//Terminal3D::Add_Texture('e', texture_e, 20, 20);
+
+
 	vec2 uv[] =
 	{
 		vec2(0,0),
@@ -43,9 +48,9 @@ int main()
 		vec2(0,1),
 		vec2(0,0),
 	};
-	Terminal3D::Add_Texture('h', texture1, 8, 9);
 
 
+	
 
 
 	while (true)
@@ -54,18 +59,6 @@ int main()
 		DeltaTime::ShowFPS();
 
 
-		vec3 p[3] =
-		{
-			vec3(-1,-1,1),
-			vec3(1,-1,1),
-			vec3(1,1,1)
-		};
-		vec3 p2[3] =
-		{
-			vec3(1,1,1),
-			vec3(-1,1,1),
-			vec3(-1,-1,1)
-		};
 		mat3 Rot =
 		{
 			cos(time),-sin(time),0,
@@ -73,27 +66,27 @@ int main()
 			0,0,1
 		};
 
-
-
-		for (int i = 0; i < 3; i++)
+		vec3 qua[] =
 		{
-			p[i] = Rot * p[i];
-			p[i] *= 50;
-			p[i] += vec3(Terminal3D::GetScreenWidth() / 2, Terminal3D::GetScreenHeight() / 2,0);
+			vec3(-1,-1,0),
+			vec3(1,-1,0),
+			vec3(1,1,0),
+			vec3(-1,1,0)
+		};
 
-			p2[i] = Rot * p2[i];
-			p2[i] *= 50;
-			p2[i] += vec3(Terminal3D::GetScreenWidth() / 2, Terminal3D::GetScreenHeight() / 2, 0);
-		}
 
 		if (GetAsyncKeyState('D') & 0x8000)
 			time += 3*DeltaTime::GetFrameTime();
 		
-		//raw::Triangle(p[0], p[1], p[2], '-');
-		//Draw::Triangle(p2[0], p2[1], p2[2], 'P');
+		for (int i = 0; i < 4; i++)
+		{
+			qua[i] = Rot * qua[i];
+			qua[i] *= 0.5;
+			//qua[i] += vec3(Terminal3D::GetScreenWidth() / 2, Terminal3D::GetScreenHeight() / 2, 0);
+		}
 
-		Draw::Triangle_uv(p, uv, 'h');
-		Draw::Triangle_uv(p2, uv2, 'h');
+		//Draw::Circle(vec2(0, 0),10, 'g');
+		Draw::Quad_uv(qua, 'h');
 
 
 		Terminal3D::Render();
