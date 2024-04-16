@@ -17,6 +17,8 @@ inline void Draw3D::Plain_uv(vec3* vertices4, char tex_code, Camera3D camera)
 		vertice -= camera.position;
 		vertice = camera.RotXAxis() * camera.RotYAxis() * vertice;
 		vertice = vec3(vertice.x / vertice.z, vertice.y / vertice.z, vertice.z);
+
+		if (vertice.z < 0)return;
 		quad_vertices[i] = vertice;
 	}
 	Quad_uv(quad_vertices, tex_code);

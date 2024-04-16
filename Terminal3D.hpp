@@ -66,8 +66,8 @@ inline void Terminal3D::init_i(int ScreenWidth, int ScreenHeight, char backgroun
 	PIXEL_COUNT = ScreenWidth * ScreenHeight;
 	z_back_buffer = new float[PIXEL_COUNT];
 	z_front_buffer = new float[PIXEL_COUNT];
-	//Setting the z_buffer to 1000. Make this whatever you want to fit your needs
-	std::fill_n(z_back_buffer, PIXEL_COUNT, 1000);
+	//z_buffer is a floating point nuumber 0 to 1
+	std::fill_n(z_back_buffer, PIXEL_COUNT, 1);
 	std::memcpy(z_front_buffer, z_back_buffer, PIXEL_COUNT * sizeof(float));
 }
 inline void Terminal3D::SetPixel(vec3 position, char character)
@@ -76,7 +76,7 @@ inline void Terminal3D::SetPixel(vec3 position, char character)
 	int y = Get().screen_h - position.y;//invert the y value
 	if (x < 0 || x >= Get().screen_w || y < 0 || y >= Get().screen_h) return;
 	int z_buffer_offset = x + y * Get().screen_h;
-	if (position.z > Get().z_front_buffer[z_buffer_offset])return;
+	if (position.z > Get().z_front_buffer[z_buffer_offset] || position.z <0)return;
 	Get().z_front_buffer[z_buffer_offset] = position.z;
 	int front_buffer_offset1 = x * 2 + y * (Get().SCREEN_CHAR_WIDTH);
 	int front_buffer_offset2 = x * 2 + 1 + y * (Get().SCREEN_CHAR_WIDTH);

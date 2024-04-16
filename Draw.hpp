@@ -7,8 +7,10 @@
 
 class Draw : Terminal3D //friend
 {
+private:
+	static float z_formula(float z) {return z / (z + 0.1);}
+
 public:
-	//3D functions
 	//2D functions
 	static void Triangle(vec3 p1, vec3 p2, vec3 p3, char c);
 	static void Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code);
@@ -19,15 +21,15 @@ public:
 
 inline void Draw::Quad_uv(vec3* p, char tex_code) //use 4 points
 {
-	vec2 uv1[] = { vec2(0,0),vec2(1,0),vec2(1,1) };
-	vec2 uv2[] = { vec2(0,0),vec2(1,1),vec2(0,1) };
+	vec2 uv1[] = { vec2(0,0),vec2(1,0)/p[1].z,vec2(1,1)/p[2].z};
+	vec2 uv2[] = { vec2(0,0),vec2(1,1)/p[2].z,vec2(0,1)/p[3].z};
 	Triangle_uv(p[0], p[1], p[2], uv1, tex_code);
 	Triangle_uv(p[0], p[2], p[3], uv2, tex_code);
 }
 inline void Draw::Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code)
 {
-	vec2 uv1[] = { vec2(0,0),vec2(1,0),vec2(1,1) };
-	vec2 uv2[] = { vec2(0,0),vec2(1,1),vec2(0,1) };
+	vec2 uv1[] = { vec2(0,0),vec2(1,0) / p2.z,vec2(1,1) / p3.z };
+	vec2 uv2[] = { vec2(0,0),vec2(1,1) / p3.z,vec2(0,1) / p4.z };
 	Triangle_uv(p1, p2, p3, uv1, tex_code);
 	Triangle_uv(p1, p3, p4, uv2, tex_code);
 }
@@ -38,6 +40,10 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	static float normalized_screen_width = Get().screen_w / (2*(Get().screen_w/Get().screen_h));
 	static float normalized_screen_height = Get().screen_h / 2;
 	static float half_screen_w = Get().screen_w / 2;
+	ASCI_Texture& tex = Get().textures[tex_code];
+	if (tex.data == NULL)return;
+
+
 	p1.x = p1.x * normalized_screen_width + half_screen_w;
 	p1.y = p1.y * normalized_screen_height + normalized_screen_height;
 	p2.x = p2.x * normalized_screen_width + half_screen_w;
@@ -45,10 +51,12 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	p3.x = p3.x * normalized_screen_width + half_screen_w;
 	p3.y = p3.y * normalized_screen_height + normalized_screen_height;
 
+	float inv_z1 = 1 / p1.z;
+	float inv_z2 = 1 / p2.z;
+	float inv_z3 = 1 / p3.z;
 
 
-	ASCI_Texture& tex = Get().textures[tex_code];
-	if (tex.data == NULL)return;
+
 
 	int min_x = min(min(p1.x, p2.x), p3.x);
 	int min_y = min(min(p1.y, p2.y), p3.y);
@@ -69,12 +77,17 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 			w3 = ((posY - p2.y) * (p1.x - p2.x) - (posX - p2.x) * (p1.y - p2.y)) /
 				((p3.y - p2.y) * (p1.x - p2.x) - (p3.x - p2.x) * (p1.y - p2.y));
 			w1 = 1 - w2 - w3;
-			vec3 pixel_position = vec3(posX, posY, p1.z * w1 + p2.z * w2 + p3.z * w3);
-			vec2 uv_cord = uv[0] * w1 + uv[1] * w2 + uv[2] * w3;
-			int uv_x = uv_cord.x * float(tex.width);
-			int uv_y = uv_cord.y * float(tex.height);
+
+			float interpolated_z = (p1.z * w1 + p2.z * w2 + p3.z * w3);
+			vec3 pixel_position = vec3(posX, posY, z_formula(interpolated_z));//adds non linear z_buffer precision
+
+			float inv_z = inv_z1 * w1 + inv_z2 * w2 + inv_z3 * w3;
+
+			vec2 uv_cord = (uv[0] * w1 + uv[1] * w2 + uv[2] * w3)/ inv_z;
+			int uv_x = uv_cord.x * tex.width;
+			int uv_y = uv_cord.y * tex.height;
 			if (!(w1 >= 0 && w1 <= 1 && w2 >= -0 && w2 <= 1 && w3 >= -0 && w3 <= 1))continue;
-			Get().SetPixel(pixel_position, tex.data[uv_x + uv_y * tex.width]);
+			Get().SetPixel(pixel_position, tex.GetCoord(uv_x,uv_y));
 		}
 	}
 }
