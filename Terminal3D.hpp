@@ -11,7 +11,7 @@ class Terminal3D : ASCI_TextureManager
 public:
 	static void Add_Texture(char tex_code, char* tex_data, int width, int height) { Get().add_texture(tex_code, tex_data, width, height); }
 	static ASCI_Texture& Get_texture(char tex_code) { Get().get_texture(tex_code); }
-	static void Init(int ScreenWidth, int ScreenHeight) { Get().init_i(ScreenWidth, ScreenHeight); };
+	static void Init(int ScreenWidth, int ScreenHeight, char background_character) { Get().init_i(ScreenWidth, ScreenHeight, background_character); };
 	static void ClearBuffer();
 	static void Render() { std::cout << "\x1B[H" << Get().front_buffer; }
 	static void SetPixel(vec3 position, char character);
@@ -36,7 +36,7 @@ protected:
 	int SCREEN_CHAR_COUNT = 0;
 	int SCREEN_CHAR_WIDTH = 0;
 	Terminal3D();
-	void init_i(int ScreenWidth, int ScreenHeight);
+	void init_i(int ScreenWidth, int ScreenHeight, char background_character);
 	static Terminal3D& Get() { static Terminal3D instance; return instance; };
 };
 inline Terminal3D::Terminal3D(){}
@@ -46,7 +46,7 @@ inline void Terminal3D::ClearBuffer()
 	std::memcpy(Get().z_front_buffer, Get().z_back_buffer, Get().PIXEL_COUNT * sizeof(float));
 	std::memcpy(Get().front_buffer, Get().back_buffer, Get().SCREEN_CHAR_COUNT);
 }
-inline void Terminal3D::init_i(int ScreenWidth, int ScreenHeight)
+inline void Terminal3D::init_i(int ScreenWidth, int ScreenHeight, char background_character)
 {
 	//String setup
 	std::cout.sync_with_stdio(false);
@@ -56,7 +56,7 @@ inline void Terminal3D::init_i(int ScreenWidth, int ScreenHeight)
 	screen_h = ScreenHeight;
 	back_buffer = new char[SCREEN_CHAR_COUNT];
 	front_buffer = new char[SCREEN_CHAR_COUNT];
-	std::fill_n(back_buffer, SCREEN_CHAR_COUNT, '.');
+	std::fill_n(back_buffer, SCREEN_CHAR_COUNT, background_character);
 	for (int i = 0; i <= ScreenHeight; i++)
 		back_buffer[(ScreenWidth * 2) + i * (ScreenWidth * 2+1)] = '\n';
 	back_buffer[SCREEN_CHAR_COUNT - 2] = '\n';

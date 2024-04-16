@@ -8,7 +8,6 @@ struct ASCI_Texture
 	int width = 0;
 	int height = 0;
 	ASCI_Texture(){}
-	ASCI_Texture(char* data,int width, int height) : width(width), height(height) , data(data){}
 	~ASCI_Texture() { delete[] data; }
 };
 

@@ -8,6 +8,8 @@
 class Draw : Terminal3D //friend
 {
 public:
+	//3D functions
+	//2D functions
 	static void Triangle(vec3 p1, vec3 p2, vec3 p3, char c);
 	static void Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code);
 	static void Circle(vec2 position, float r, char character);
@@ -44,6 +46,7 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	p3.y = p3.y * normalized_screen_height + normalized_screen_height;
 
 
+
 	ASCI_Texture& tex = Get().textures[tex_code];
 	if (tex.data == NULL)return;
 
@@ -68,8 +71,8 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 			w1 = 1 - w2 - w3;
 			vec3 pixel_position = vec3(posX, posY, p1.z * w1 + p2.z * w2 + p3.z * w3);
 			vec2 uv_cord = uv[0] * w1 + uv[1] * w2 + uv[2] * w3;
-			int uv_x = uv_cord.x * tex.width;
-			int uv_y = uv_cord.y * tex.height;
+			int uv_x = uv_cord.x * float(tex.width);
+			int uv_y = uv_cord.y * float(tex.height);
 			if (!(w1 >= 0 && w1 <= 1 && w2 >= -0 && w2 <= 1 && w3 >= -0 && w3 <= 1))continue;
 			Get().SetPixel(pixel_position, tex.data[uv_x + uv_y * tex.width]);
 		}
