@@ -1,6 +1,6 @@
 #pragma once
 #include "Terminal3D.hpp"
-
+#include <algorithm>
 
 
 
@@ -68,10 +68,10 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	float inv_z2 = 1 / p2.z;
 	float inv_z3 = 1 / p3.z;
 
-	int min_x = min(min(p1.x, p2.x), p3.x);
-	int min_y = min(min(p1.y, p2.y), p3.y);
-	int max_x = max(max(p1.x, p2.x), p3.x);
-	int max_y = max(max(p1.y, p2.y), p3.y);
+	int min_x = std::min(std::min(p1.x, p2.x), p3.x);
+	int min_y = std::min(std::min(p1.y, p2.y), p3.y);
+	int max_x = std::max(std::max(p1.x, p2.x), p3.x);
+	int max_y = std::max(std::max(p1.y, p2.y), p3.y);
 	//prevent rendering off screen
 	if (min_x < 0) min_x = 0;
 	if (min_y < 0) min_y = 0;
@@ -116,10 +116,10 @@ inline void Draw::Triangle(vec3 p1, vec3 p2, vec3 p3, char c) //RASTERIZER using
 	p3.y = p3.y * normalized_screen_height + normalized_screen_height;
 
 
-	int min_x = min(min(p1.x, p2.x), p3.x);
-	int min_y = min(min(p1.y, p2.y), p3.y);
-	int max_x = max(max(p1.x, p2.x), p3.x);
-	int max_y = max(max(p1.y, p2.y), p3.y);
+	int min_x = std::min(std::min(p1.x, p2.x), p3.x);
+	int min_y = std::min(std::min(p1.y, p2.y), p3.y);
+	int max_x = std::max(std::max(p1.x, p2.x), p3.x);
+	int max_y = std::max(std::max(p1.y, p2.y), p3.y);
 	//prevent rendering off screen
 	if (min_x < 0) min_x = 0;
 	if (min_y < 0) min_y = 0;

@@ -2,14 +2,17 @@
 #include "Camera3D.hpp"
 
 
+
+/* To use the Draw3D functions, you must pass an array of 4 vec3's to specify its vertices
+*/
 class Draw3D : Draw
 {
 public:
-	static void Plain_uv(vec3 position, vec3* vertices4, char tex_code, Camera3D camera);
-	static void Plain(vec3 position, vec3* vertices4, char character, Camera3D camera);
+	static void Plain_uv(const vec3 position, const vec3* vertices4, char tex_code, Camera3D camera);
+	static void Plain(const vec3 position, const vec3* vertices4, char character, Camera3D camera);
 };
 
-inline void Draw3D::Plain_uv(vec3 position, vec3* vertices4, char tex_code, Camera3D camera)
+inline void Draw3D::Plain_uv(vec3 position, const vec3* vertices4, char tex_code, Camera3D camera)
 {
 	vec3 quad_vertices[4];
 	for (int i = 0; i < 4; i++)
@@ -28,7 +31,7 @@ inline void Draw3D::Plain_uv(vec3 position, vec3* vertices4, char tex_code, Came
 	Quad_uv(quad_vertices, tex_code);
 }
 
-inline void Draw3D::Plain(vec3 position, vec3* vertices4, char character, Camera3D camera)
+inline void Draw3D::Plain(const vec3 position, const vec3* vertices4, char character, Camera3D camera)
 {
 	vec3 quad_vertices[4];
 	for (int i = 0; i < 4; i++)

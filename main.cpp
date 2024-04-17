@@ -1,164 +1,134 @@
-#include "Windows.h"
+
 #include <iostream>
 #include "DeltaTime.hpp"
 #include "Terminal3D.hpp"
 #include "Draw3D.hpp"
 
+//these includes were only used for the demo
+#include "Meshes.h"
+#include "Font.h"
+
+
+
+
+
+// HOLDS CTR + Down_scroll
+
+
+
+/*3D Graphics in ASCI
+* This Demo is a spinnig asci "HELLOWORLD".
+* 
+* This Library allows for graphics to be drawn in the terminal.
+* I have provided many functions like Draw::Triangle or Draw3D::plain for 3D objects
+* 
+* functions like Draw::Quad_uv or Plain_uv are used to Render specific textures.
+* tex_codes are the keys givin to access the texture
+*/
+
+
+/* For Windows users, go into the camera header and uncomment the camera controls
+* controls: w, a, s, d, space(fly up), c(fly down), and arrow keys for looking around
+*/
+
+
 
 
 int main()
 {
-
-	Terminal3D::Init(300,180, '.');
-	Terminal3D::Render();
+	//window initialization
+	Terminal3D::Init(150,100, '.');
 
 	//DeltaTime::SetTargetFPS(60);
 
 	float x = 40;
 	float y = 0;
+
+
 	
-	float time = 0;
-
-	char Tex_h[] =
-	{
-		'o','o','o','o','o','o',
-		'o','.','o','o','.','o',
-		'o','.','o','o','.','o',
-		'o','.','o','o','.','o',
-		'o','.','.','.','.','o',
-		'o','.','o','o','.','o',
-		'o','.','o','o','.','o',
-		'o','.','o','o','.','o',
-		'o','o','o','o','o','o',
-	};
-
-	char Tex_e[] =
-	{
-		'o','o','o','o','o',
-		'o','.','.','.','o',
-		'o','.','o','o','o',
-		'o','.','o','o','o',
-		'o','.','.','.','o',
-		'o','.','o','o','o',
-		'o','.','o','o','o',
-		'o','.','.','.','o',
-		'o','o','o','o','o'
-	};
-
-	char Tex_l[] =
-	{
-		'o','o','o','o','o',
-		'o','.','o','o','o',
-		'o','.','o','o','o',
-		'o','.','o','o','o',
-		'o','.','o','o','o',
-		'o','.','o','o','o',
-		'o','.','o','o','o',
-		'o','.','.','.','o',
-		'o','o','o','o','o'
-	};
-
-	char Tex_o[] =
-	{
-		'o','o','o','o','o',
-		'o','.','.','.','o',
-		'o','.','o','.','o',
-		'o','.','o','.','o',
-		'o','.','o','.','o',
-		'o','.','o','.','o',
-		'o','.','o','.','o',
-		'o','.','.','.','o',
-		'o','o','o','o','o'
-	};
-
-	char Tex_uv[] =
-	{
-		'#',' ','#',' ', '#',' ','#',' ',
-		' ','#',' ','#',' ', '#',' ','#',
-		'#',' ','#',' ', '#',' ','#',' ',
-		' ','#',' ','#',' ', '#',' ','#',
-		'#',' ','#',' ', '#',' ','#',' ',
-		' ','#',' ','#',' ', '#',' ','#',
-		'#',' ','#',' ', '#',' ','#',' ',
-		' ','#',' ','#',' ', '#',' ','#'
-	};
-
-	Terminal3D::Add_Texture('X', Tex_uv, 8, 8);
-	Terminal3D::Add_Texture('o', Tex_o, 5, 9);
-	Terminal3D::Add_Texture('l', Tex_l, 5, 9);
-	Terminal3D::Add_Texture('e', Tex_e, 5, 9);
-	Terminal3D::Add_Texture('h', Tex_h, 6, 9);
-
-	//Terminal3D::Add_Texture('e', texture_e, 20, 20);
-
-
-	vec2 uv[] =
-	{
-		vec2(0,0),
-		vec2(1,0),
-		vec2(1,1),
-	};
-	vec2 uv2[] =
-	{
-		vec2(1,1),
-		vec2(0,1),
-		vec2(0,0),
-	};
+	Terminal3D::Add_Texture('H', Font::tex_HELLO_WORLD, 70, 7);
+	Terminal3D::Add_Texture('W', Font::tex_W, 7, 7);
+	Terminal3D::Add_Texture(0, Font::tex_error, 6, 6);
+	Terminal3D::Add_Texture(1, Font::tex_HAPPY, 9, 8);
 
 
 	Camera3D camera;
 
+	using namespace Cube;
 
-
-
+	camera.view = vec2(0, -0.5);
+	camera.position = vec3(0, 1.5, 0);
+	float time = 0;
 	while (true)
 	{
 		DeltaTime::HandleTime();
 		DeltaTime::ShowFPS();
 
+		time += DeltaTime::GetFrameTime();
+		camera.Update();
 
-		mat3 RotY =
+		//Demo
+		mat3 RotX
 		{
 			cosf(time), 0, sinf(time),
 			0,1,0,
 			-sinf(time), 0 ,cosf(time)
 		};
 
-		vec3 H[] =
+		vec3 h_world_f[4] =
 		{
-			vec3(-1,-2,0),
-			vec3(1,-2,0),
-			vec3(1,2,0),
-			vec3(-1,2,0)
+			vec3(-2, -0.5, -0.5),	//Bottom Left
+			vec3(2, -0.5, -0.5),	//Bottom Right
+			vec3(2, 0.5, -0.5),	//Top Right
+			vec3(-2, 0.5, -0.5)	//Top Left
+		};
+		vec3 h_world_b[4] =
+		{
+			vec3(2, -0.5,	0.5),	//Bottom Left
+			vec3(-2, -0.5,	0.5),	//Bottom Right
+			vec3(-2, 0.5,	0.5),	//Top Right
+			vec3(2, 0.5,	0.5)	//Top Left
+		};
+		vec3 h_world_r[4] =
+		{
+			vec3(2,-0.5,-0.5),
+			vec3(2,-0.5,0.5),
+			vec3(2,0.5,0.5),
+			vec3(2,0.5,-0.5)
+		};
+		vec3 h_world_l[4] =
+		{
+			vec3(-2, -0.5, 0.5),
+			vec3(-2, -0.5, -0.5),
+			vec3(-2, 0.5, -0.5),
+			vec3(-2,0.5,0.5)
+		};
+		vec3 h_world_t[4] =
+		{
+			vec3(-2, 0.5, -0.5),
+			vec3(2, 0.5, -0.5),
+			vec3(2, 0.5, 0.5),
+			vec3(-2, 0.5, 0.5)
 		};
 
-		vec3 E[4];
-		vec3 L[4];
-		vec3 L2[4];
-		vec3 O[4];
-
-
-		if (GetAsyncKeyState('F') & 0x8000)
-			time += 3*DeltaTime::GetFrameTime();
-
-		camera.Update();
-		
 		for (int i = 0; i < 4; i++)
 		{
-			H[i] = RotY * H[i] + vec3(0.001,0.01,0.11);
+			h_world_f[i] = RotX * h_world_f[i];
+			h_world_b[i] = RotX * h_world_b[i];
+			h_world_r[i] = RotX * h_world_r[i];
+			h_world_l[i] = RotX * h_world_l[i];
+			h_world_t[i] = RotX * h_world_t[i];
 		}
+		
+		//rendering to the string
+		Draw3D::Plain_uv(vec3(0, 0,3), h_world_f, 'H', camera);
+		Draw3D::Plain_uv(vec3(0, 0, 3), h_world_b, 'H', camera);
+		Draw3D::Plain_uv(vec3(0, 0, 3), h_world_r, 0, camera);
+		Draw3D::Plain_uv(vec3(0, 0, 3), h_world_l, 1, camera);
+		Draw3D::Plain(vec3(0, 0, 3), h_world_t, '[', camera);
 
-		//Draw::Circle(vec2(0, 0),10, 'g');
-		//Draw::Quad_uv(qua, 'h');
-		std::string s = "hello";
 
-		for(int i = 0; i< s.length();i++)
-			Draw3D::Plain_uv(vec3(i%10 * 2, 0,2),H, s[i], camera);
-
-		Draw3D::Plain_uv(vec3(0, 0,5), H, 'X', camera);
-
-		Terminal3D::Render();
-		//std::cout << "\x1B[H";
+		Terminal3D::Render();// <- couts the string
 		Terminal3D::ClearBuffer();
 	}
 	Terminal3D::Terminate();
