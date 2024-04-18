@@ -54,15 +54,15 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 
 
 	//Normalizing coordinates from -1 to 1 in x and y axis
-	static float normalized_screen_width = Get().screen_w / (2 * (Get().screen_w / Get().screen_h));
-	static float normalized_screen_height = Get().screen_h / 2;
-	static float half_screen_w = Get().screen_w / 2;
+	static float half_screen_w = (Get().screen_w / 2);
+	static float half_screen_h = (Get().screen_h / 2);
+	static float normalized_screen_width = half_screen_w * (float(Get().screen_h) / float(Get().screen_w));
 	p1.x = p1.x * normalized_screen_width + half_screen_w;
-	p1.y = p1.y * normalized_screen_height + normalized_screen_height;
+	p1.y = p1.y * normalized_screen_width + half_screen_h;
 	p2.x = p2.x * normalized_screen_width + half_screen_w;
-	p2.y = p2.y * normalized_screen_height + normalized_screen_height;
+	p2.y = p2.y * half_screen_h + half_screen_h;
 	p3.x = p3.x * normalized_screen_width + half_screen_w;
-	p3.y = p3.y * normalized_screen_height + normalized_screen_height;
+	p3.y = p3.y * half_screen_h + half_screen_h;
 
 	float inv_z1 = 1 / p1.z;
 	float inv_z2 = 1 / p2.z;
@@ -105,15 +105,15 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 inline void Draw::Triangle(vec3 p1, vec3 p2, vec3 p3, char c) //RASTERIZER using barycentric coordinates
 {
 	//Normalizing coordinates from -1 to 1 in x and y axis
-	static float normalized_screen_width = Get().screen_w / (2 * (Get().screen_w / Get().screen_h));
-	static float normalized_screen_height = Get().screen_h / 2;
-	static float half_screen_w = Get().screen_w / 2;
+	static float half_screen_w = (Get().screen_w / 2);
+	static float half_screen_h = (Get().screen_h / 2);
+	static float normalized_screen_width = half_screen_w * (float(Get().screen_h) / float(Get().screen_w));
 	p1.x = p1.x * normalized_screen_width + half_screen_w;
-	p1.y = p1.y * normalized_screen_height + normalized_screen_height;
+	p1.y = p1.y * normalized_screen_width + half_screen_h;
 	p2.x = p2.x * normalized_screen_width + half_screen_w;
-	p2.y = p2.y * normalized_screen_height + normalized_screen_height;
+	p2.y = p2.y * half_screen_h + half_screen_h;
 	p3.x = p3.x * normalized_screen_width + half_screen_w;
-	p3.y = p3.y * normalized_screen_height + normalized_screen_height;
+	p3.y = p3.y * half_screen_h + half_screen_h;
 
 
 	int min_x = std::min(std::min(p1.x, p2.x), p3.x);

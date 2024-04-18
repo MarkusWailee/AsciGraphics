@@ -37,7 +37,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(150,100, '.');
+	Terminal3D::Init(600,400, ' ');
 
 	//DeltaTime::SetTargetFPS(60);
 
@@ -64,7 +64,7 @@ int main()
 		DeltaTime::HandleTime();
 		DeltaTime::ShowFPS();
 
-		time += DeltaTime::GetFrameTime();
+		time += 0.5*DeltaTime::GetFrameTime();
 		camera.Update();
 
 		//Demo
@@ -125,7 +125,7 @@ int main()
 		Draw3D::Plain_uv(vec3(0, 0, 3), h_world_b, 'H', camera);
 		Draw3D::Plain_uv(vec3(0, 0, 3), h_world_r, 0, camera);
 		Draw3D::Plain_uv(vec3(0, 0, 3), h_world_l, 1, camera);
-		Draw3D::Plain(vec3(0, 0, 3), h_world_t, '[', camera);
+		Draw3D::Plain(vec3(0, 0, 3), h_world_t, ']', camera);
 
 
 		Terminal3D::Render();// <- couts the string

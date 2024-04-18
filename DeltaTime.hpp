@@ -37,10 +37,10 @@ inline void DeltaTime::ShowFPS_i()
 	static int fps_counter = 0;
 	fps_counter++;
 	FPS += 1 / deltaTime;
-	if (fps_counter >= 200)
+	if (fps_counter >= 100)
 	{
 		//std::cout << FPS / float(100) << '\n';
-		AVG_FPS = FPS / float(200);
+		AVG_FPS = FPS / float(100);
 		FPS = 0;
 		fps_counter = 0;
 	}
