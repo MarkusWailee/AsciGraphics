@@ -8,6 +8,7 @@
 class Draw : Terminal3D //friend
 {
 private:
+	Draw(){}
 	static float z_formula(float z) {return z / (z + 0.1);}//non linear curve for z_buffer
 
 public:

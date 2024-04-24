@@ -37,7 +37,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(600,400, ' ');
+	Terminal3D::Init(300,200, ' ');
 
 	//DeltaTime::SetTargetFPS(60);
 
@@ -59,6 +59,8 @@ int main()
 	camera.view = vec2(0, -0.5);
 	camera.position = vec3(0, 1.5, 0);
 	float time = 0;
+
+
 	while (true)
 	{
 		DeltaTime::HandleTime();
