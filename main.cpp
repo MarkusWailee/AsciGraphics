@@ -37,7 +37,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(300,200, ' ');
+	Terminal3D::Init(300,150, ' ');
 
 	//DeltaTime::SetTargetFPS(60);
 
